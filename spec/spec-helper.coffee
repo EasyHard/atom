@@ -321,13 +321,16 @@ window.fakeClearInterval = (idToClear) ->
 
 window.advanceClock = (delta=1) ->
   window.now += delta
-  callbacks = []
+  while true
+    callbacks = []
 
-  window.timeouts = window.timeouts.filter ([id, strikeTime, callback]) ->
-    if strikeTime <= window.now
-      callbacks.push(callback)
-      false
-    else
-      true
+    window.timeouts = window.timeouts.filter ([id, strikeTime, callback]) ->
+      if strikeTime <= window.now
+        callbacks.push(callback)
+        false
+      else
+        true
 
-  callback() for callback in callbacks
+    callback() for callback in callbacks
+    if callbacks.length is 0
+      break
